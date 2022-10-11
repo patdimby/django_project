@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+
 # Create your views here.
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()
@@ -14,7 +15,7 @@ class PostList(generics.ListCreateAPIView):
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    
+
 
 @api_view(['GET', 'POST'])
 def post_list(request):
@@ -28,6 +29,7 @@ def post_list(request):
             post_serializer.save()
             return Response(post_serializer.data, status=status.HTTP_201_CREATED)
     return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def post_detail(request, pk):

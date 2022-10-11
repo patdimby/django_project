@@ -3,16 +3,17 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from books.models import Book
 
+
 # Create your tests here.
 class APITests(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.book = Book.objects.create(
-        title="Django for APIs",
-        subtitle="Build web APIs with Python and Django",
-        author="William S. Vincent",
-        isbn="9781735467221",
-    )
+            title="Django for APIs",
+            subtitle="Build web APIs with Python and Django",
+            author="William S. Vincent",
+            isbn="9781735467221",
+        )
 
     def test_api_listview(self):
         response = self.client.get(reverse("book_list"))
