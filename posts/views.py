@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from rest_framework import generics
 from .models import Post
 from .serializers import PostSerializer
@@ -7,6 +8,9 @@ from rest_framework.response import Response
 
 
 # Create your views here.
+def BlogPage(request):
+    return render(request,'posts/blog.html')
+
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -49,3 +53,5 @@ def post_detail(request, pk):
     elif request.method == 'DELETE':
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+   
