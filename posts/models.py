@@ -1,11 +1,21 @@
+from distutils.command.upload import upload
 from django.conf import settings  # reading conf
 from django.db import models
 from django.utils import timezone
 # for authentifications.
 from django.contrib.auth.models import User
 
+class Tag(models.Model):
+    name = models.CharField(max_length=20, default='Lifestyle')    
+    class Meta:
+        # ordering
+        ordering = ['name']
+    
+    def __str__(self):
+        return self.name
+
 class Category(models.Model):
-    name = models.CharField(max_length=20, default='Nature Lifestyle')
+    name = models.CharField(max_length=30, default='Nature Lifestyle')
     
     class Meta:
         # ordering
@@ -20,15 +30,16 @@ class Post(models.Model):
         PUBLISHED = 'PB', 'Published'
 
     title = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=250)
-    # author = models.ForeignKey(User, on_delete=models.CASCADE)
-    # category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    body = models.TextField()   
+    slug = models.SlugField(max_length=250, null=True, blank=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, blank=True)
+    body = models.TextField()    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     publish = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=2, choices=Status.choices, default=Status.DRAFT)
-    image = models.ImageField(default=None, upload_to='post_images/')
+    image = models.ImageField(upload_to='post_images/')
 
     class Meta:
         # ordering
@@ -41,17 +52,17 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=80)
     email = models.EmailField()
     body = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
 
     class Meta:
-        ordering = ['created']
-        indexes = [models.Index(fields=['created']), ]
+        ordering = ['created_at']
+        indexes = [models.Index(fields=['created_at']), ]
 
     def __str__(self):
         return f'Comment by {self.name} on {self.post}'
