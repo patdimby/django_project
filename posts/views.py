@@ -13,8 +13,10 @@ def BlogPage(request):
     tags = []
     if request.method == 'GET':
         tags = Tag.objects.all().order_by('name')
-        categories = Category.objects.all().order_by('name')     
-    return render(request,'posts/blog.html', { 'tags': tags, 'categories': categories })
+        categories = Category.objects.all().order_by('name')
+        posts = Post.objects.all()
+        print(posts)
+    return render(request,'posts/blog.html', { 'tags': tags, 'categories': categories, 'posts': posts })
 
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()
