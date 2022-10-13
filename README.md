@@ -5,5 +5,5 @@
 - [x] Set up a Django project
 - [x] Create a Django app
 # Theming app
-- [x]Add static files to app
-- [x]Add static files to app
+- [x] Add static files to app
+- [x] Add static files to app
