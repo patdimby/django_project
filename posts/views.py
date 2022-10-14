@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render
 from django.core import serializers
 from django.http import JsonResponse
@@ -35,6 +36,13 @@ def BlogPage(request):
             data.append(item)
        
     return render(request,'posts/blog.html', { 'tags': tags, 'categories': categories , 'data': data })
+
+def retails(request, id):
+    if request.method == 'GET':
+        post = Post.objects.get(id=id)
+        print(post)
+        return render(request, "posts/post-details.html", {'post': post })
+
 
 def load_post(request):
     posts = Post.objects.all()
@@ -113,4 +121,9 @@ def post_detail(request, pk):
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-   
+def about(request):
+    return render(request, 'posts/about.html')
+
+
+def contact(request):
+    return render(request, 'posts/contact.html')
