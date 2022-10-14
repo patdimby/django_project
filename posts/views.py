@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.core import serializers
 from django.http import JsonResponse
 from rest_framework import generics
 from .models import Post, Tag, Category
@@ -15,9 +16,13 @@ def BlogPage(request):
     if request.method == 'GET':
         tags = Tag.objects.all().order_by('name')
         categories = Category.objects.all().order_by('name')
-        posts = Post.objects.all()
-        print(posts)
-    return render(request,'posts/blog.html', { 'tags': tags, 'categories': categories, 'posts': posts })
+       
+    return render(request,'posts/blog.html', { 'tags': tags, 'categories': categories })
+
+def load_post(request):
+    posts = Post.objects.all()
+    data = serializers.serialize('json', posts)
+    return JsonResponse({ 'data': data })
 
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()

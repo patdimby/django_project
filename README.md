@@ -9,8 +9,9 @@
 - [x] Add media to app
 
 # Connect to MySQL database
-- [] Install driver MySQL
-- [] Create database.
-- [] Add database connection
+- [x] Install driver MySQL
+- [x] Create database.
+- [x] Add database connection
+- [x] Add users data and posts data.
 
 
