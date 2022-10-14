@@ -7,3 +7,6 @@
 # Theming app
 - [x] Add static files to app
 - [x] Add media to app
+
+# JavaScript basics
+
