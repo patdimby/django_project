@@ -8,5 +8,9 @@
 - [x] Add static files to app
 - [x] Add media to app
 
-# JavaScript basics
+# Connect to MySQL database
+- [] Install driver MySQL
+- [] Create database.
+- [] Add database connection
+
 
