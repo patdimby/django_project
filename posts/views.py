@@ -1,9 +1,10 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 from rest_framework import generics
 from .models import Post, Tag, Category
 from .serializers import PostSerializer, TagSerializer
 from rest_framework import status
-from rest_framework.renderers import JSONRenderer
+# from rest_framework.renderers import JSONRenderer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
