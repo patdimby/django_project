@@ -16,12 +16,45 @@ def BlogPage(request):
     if request.method == 'GET':
         tags = Tag.objects.all().order_by('name')
         categories = Category.objects.all().order_by('name')
+        posts = Post.objects.all()
+        data = []
+        for post in posts:
+            item = {
+                'id': post.id,
+                'day': post.publish.day,
+                'year': post.publish.year,
+                'author': post.author.username,
+                'body' : post.body, 
+                'category' : post.category.name,
+                'image' : post.image.url,            
+                'slug' : post.slug,
+                'status' : post.status,
+                'tag' : post.tag.name,
+                'title' : post.title
+            }
+            data.append(item)
        
-    return render(request,'posts/blog.html', { 'tags': tags, 'categories': categories })
+    return render(request,'posts/blog.html', { 'tags': tags, 'categories': categories , 'data': data })
 
 def load_post(request):
     posts = Post.objects.all()
-    data = serializers.serialize('json', posts)
+    data = []
+    for post in posts:
+        item = {
+            'id': post.id,
+            'day': post.publish.day,
+            'month':post.publish.month,
+            'year': post.publish.year,
+            'author': post.author.username,
+            'body' : post.body, 
+            'category' : post.category.name,
+            'image' : post.image.url,            
+            'slug' : post.slug,
+            'status' : post.status,
+            'tag' : post.tag.name,
+            'title' : post.title
+        }
+        data.append(item)
     return JsonResponse({ 'data': data })
 
 class PostList(generics.ListCreateAPIView):
