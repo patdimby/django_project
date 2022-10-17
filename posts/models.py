@@ -83,6 +83,7 @@ class Social(models.Model):
 class Banner(models.Model):
     title = models.CharField(max_length=50)
     page  = models.CharField(max_length=50)
+    slug = models.SlugField()
     class Meta:
         # ordering
         ordering = ['title']       

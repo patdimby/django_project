@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.core import serializers
 from django.http import JsonResponse
 from rest_framework import generics
-from .models import Post, Tag, Category, Social
+from .models import Post, Tag, Category, Social, Banner
 from .serializers import PostSerializer, TagSerializer
 from rest_framework import status
 # from rest_framework.renderers import JSONRenderer
@@ -67,6 +67,9 @@ def social_links(request):
         }
         data.append(item)
     return JsonResponse({ 'data': data })
+
+def get_banner(request, id):
+    banner = Banner.objects.get()
 
 def load_post(request):
     posts = Post.objects.all()
