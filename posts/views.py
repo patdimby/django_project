@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.core import serializers
 from django.http import JsonResponse
 from rest_framework import generics
-from .models import Post, Tag, Category
+from .models import Post, Tag, Category, Social
 from .serializers import PostSerializer, TagSerializer
 from rest_framework import status
 # from rest_framework.renderers import JSONRenderer
@@ -37,12 +37,36 @@ def BlogPage(request):
        
     return render(request,'posts/blog.html', { 'tags': tags, 'categories': categories , 'data': data })
 
+def about(request):
+    if request.method == 'GET':
+        tags = Tag.objects.all().order_by('name')
+        categories = Category.objects.all().order_by('name')
+        socials = Social.objects.all()
+        context= {'tags': tags, 'categories': categories , 'socials': socials }
+    return render(request, 'posts/about.html', context)
+
+
+def contact(request):
+    return render(request, 'posts/contact.html')
+
+
 def retails(request, id):
     if request.method == 'GET':
         post = Post.objects.get(id=id)
         print(post)
         return render(request, "posts/post-details.html", {'post': post })
 
+def social_links(request):
+    socials = Social.objects.all()
+    data = []
+    for soc in socials:
+        item = {
+            'id': soc.id,
+            'title': soc.title,
+            'link': soc.link            
+        }
+        data.append(item)
+    return JsonResponse({ 'data': data })
 
 def load_post(request):
     posts = Post.objects.all()
@@ -121,9 +145,3 @@ def post_detail(request, pk):
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-def about(request):
-    return render(request, 'posts/about.html')
-
-
-def contact(request):
-    return render(request, 'posts/contact.html')
