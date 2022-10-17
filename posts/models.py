@@ -91,4 +91,14 @@ class Banner(models.Model):
     
     def __str__(self):
         return self.title
+    
 
+class Info(models.Model):
+    name = models.CharField(max_length=20)
+    phone = models.CharField(max_length=50)
+    adresse = models.CharField(max_length=200)
+    mail = models.EmailField()
+    website = models.URLField()
+    
+    def __str__(self):
+        return self.name
