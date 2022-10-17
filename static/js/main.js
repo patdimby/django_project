@@ -4,7 +4,7 @@ $.ajax({
         type:'GET',
         url : '/blog/socials',
         success: function(response){          
-            const data = response.data
+            const data = response.data            
             data.forEach(element => {
                 socials.innerHTML +=`<li><a href="${element.link}">${element.title}</a></li>`
             });

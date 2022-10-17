@@ -15,6 +15,7 @@ from rest_framework.response import Response
 def BlogPage(request):
     tags = []
     if request.method == 'GET':
+        socials = Social.objects.all()
         tags = Tag.objects.all().order_by('name')
         categories = Category.objects.all().order_by('name')
         posts = Post.objects.all()
@@ -35,7 +36,7 @@ def BlogPage(request):
             }
             data.append(item)
        
-    return render(request,'posts/blog.html', { 'tags': tags, 'categories': categories , 'data': data })
+    return render(request,'posts/blog.html', { 'tags': tags, 'categories': categories , 'data': data , 'socials': socials })
 
 def about(request):
     if request.method == 'GET':
