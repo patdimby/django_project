@@ -87,11 +87,11 @@ class Banner(models.Model):
     slug = models.SlugField()
     class Meta:
         # ordering
-        ordering = ['title']       
+        ordering = ['-name']       
        
     
     def __str__(self):
-        return self.title
+        return self.name
     
 
 class Info(models.Model):
