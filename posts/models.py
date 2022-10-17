@@ -81,6 +81,7 @@ class Social(models.Model):
         return self.title
     
 class Banner(models.Model):
+    name = models.CharField(max_length=10, default='', blank=True)
     title = models.CharField(max_length=50)
     page  = models.CharField(max_length=50)
     slug = models.SlugField()
