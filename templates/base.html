@@ -9,7 +9,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         {% block title %}
-            <title>Basic</title>
+            <title>{{ banner.name }}</title>
         {% endblock title %}       
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,6 +26,22 @@
         {% block heading %}
         {% endblock %}
         <div>
+             <!-- Banner Starts Here -->
+    <div class="heading-page header-text">
+        <section class="page-heading">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="text-content">
+                  <h4>{{ banner.title}}</h4>
+                  <h2>{{ banner.page }}</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <!-- Banner Ends Here -->
             {% block content %}
             {% endblock content %}
         </div>

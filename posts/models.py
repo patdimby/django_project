@@ -7,24 +7,28 @@ from django.utils import timezone
 # for authentifications.
 from django.contrib.auth.models import User
 
+
 class Tag(models.Model):
-    name = models.CharField(max_length=20, default='Lifestyle')    
+    name = models.CharField(max_length=20, default='Lifestyle')
+
     class Meta:
         # ordering
         ordering = ['name']
-    
+
     def __str__(self):
         return self.name
 
+
 class Category(models.Model):
     name = models.CharField(max_length=30, default='Nature Lifestyle')
-    
+
     class Meta:
         # ordering
         ordering = ['name']
-    
+
     def __str__(self):
         return self.name
+
 
 class Post(models.Model):
     class Status(models.TextChoices):
@@ -36,7 +40,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, blank=True)
-    body = models.TextField()    
+    body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     publish = models.DateTimeField(default=timezone.now)
@@ -69,30 +73,32 @@ class Comment(models.Model):
     def __str__(self):
         return f'Comment by {self.name} on {self.post}'
 
+
 class Social(models.Model):
     title = models.CharField(max_length=50)
-    link  = models.URLField(default='', blank=True)
+    link = models.URLField(default='', blank=True)
+
     class Meta:
         # ordering
-        ordering = ['title']       
-       
-    
+        ordering = ['title']
+
     def __str__(self):
         return self.title
-    
+
+
 class Banner(models.Model):
     name = models.CharField(max_length=10, default='', blank=True)
     title = models.CharField(max_length=50)
-    page  = models.CharField(max_length=50)
+    page = models.CharField(max_length=50)
     slug = models.SlugField()
+
     class Meta:
         # ordering
-        ordering = ['-name']       
-       
-    
+        ordering = ['-name']
+
     def __str__(self):
         return self.name
-    
+
 
 class Info(models.Model):
     name = models.CharField(max_length=20)
@@ -101,6 +107,6 @@ class Info(models.Model):
     adresse = models.CharField(max_length=50)
     mail = models.EmailField()
     website = models.URLField()
-    
+
     def __str__(self):
         return self.name

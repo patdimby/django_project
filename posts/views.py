@@ -15,6 +15,7 @@ from rest_framework.response import Response
 def BlogPage(request):
     tags = []
     if request.method == 'GET':
+        banner = get_banner('blog')
         socials = Social.objects.all()
         tags = Tag.objects.all().order_by('name')
         categories = Category.objects.all().order_by('name')
@@ -26,36 +27,44 @@ def BlogPage(request):
                 'day': post.publish.day,
                 'year': post.publish.year,
                 'author': post.author.username,
-                'body' : post.body, 
-                'category' : post.category.name,
-                'image' : post.image.url,            
-                'slug' : post.slug,
-                'status' : post.status,
-                'tag' : post.tag.name,
-                'title' : post.title
+                'body': post.body,
+                'category': post.category.name,
+                'image': post.image.url,
+                'slug': post.slug,
+                'status': post.status,
+                'tag': post.tag.name,
+                'title': post.title
             }
             data.append(item)
-       
-    return render(request,'posts/blog.html', { 'tags': tags, 'categories': categories , 'data': data , 'socials': socials })
+    context = {'tags': tags, 'categories': categories, 'data': data, 'socials': socials, 'banner': banner}
+    return render(request, 'posts/blog.html', context)
+
 
 def about(request):
     if request.method == 'GET':
+        banner = get_banner('about')
         tags = Tag.objects.all().order_by('name')
         categories = Category.objects.all().order_by('name')
         socials = Social.objects.all()
-        context= {'tags': tags, 'categories': categories , 'socials': socials }
+        context = {'tags': tags, 'categories': categories, 'socials': socials, 'banner': banner}
     return render(request, 'posts/about.html', context)
 
 
 def contact(request):
-    return render(request, 'posts/contact.html')
+    banner = get_banner('contact')
+    context = {'banner': banner}
+    return render(request, 'posts/contact.html', context)
 
 
 def retails(request, id):
     if request.method == 'GET':
         post = Post.objects.get(id=id)
-        print(post)
-        return render(request, "posts/post-details.html", {'post': post })
+        banner = get_banner('details')
+        tags = Tag.objects.all().order_by('name')
+        categories = Category.objects.all().order_by('name')
+        context = {'banner': banner, 'post': post, 'tags': tags, 'categories': categories}
+        return render(request, "posts/post-details.html", context)
+
 
 def social_links(request):
     socials = Social.objects.all()
@@ -64,13 +73,16 @@ def social_links(request):
         item = {
             'id': soc.id,
             'title': soc.title,
-            'link': soc.link            
+            'link': soc.link
         }
         data.append(item)
-    return JsonResponse({ 'data': data })
+    return JsonResponse({'data': data})
 
-def get_banner(request, id):
-    banner = Banner.objects.get()
+
+def get_banner(slug):
+    banner = Banner.objects.get(slug=slug)
+    return banner
+
 
 def load_post(request):
     posts = Post.objects.all()
@@ -79,19 +91,20 @@ def load_post(request):
         item = {
             'id': post.id,
             'day': post.publish.day,
-            'month':post.publish.month,
+            'month': post.publish.month,
             'year': post.publish.year,
             'author': post.author.username,
-            'body' : post.body, 
-            'category' : post.category.name,
-            'image' : post.image.url,            
-            'slug' : post.slug,
-            'status' : post.status,
-            'tag' : post.tag.name,
-            'title' : post.title
+            'body': post.body,
+            'category': post.category.name,
+            'image': post.image.url,
+            'slug': post.slug,
+            'status': post.status,
+            'tag': post.tag.name,
+            'title': post.title
         }
         data.append(item)
-    return JsonResponse({ 'data': data })
+    return JsonResponse({'data': data})
+
 
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()
@@ -115,6 +128,7 @@ def post_list(request):
             post_serializer.save()
             return Response(post_serializer.data, status=status.HTTP_201_CREATED)
     return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'POST'])
 def tag_list(request):
@@ -148,4 +162,3 @@ def post_detail(request, pk):
     elif request.method == 'DELETE':
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
