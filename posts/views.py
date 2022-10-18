@@ -12,41 +12,15 @@ from rest_framework.response import Response
 
 
 # Create your views here.
-def BlogPage(request):
-    tags = []
+def BlogPage(request):    
     if request.method == 'GET':
-        banner = get_banner('blog')
-        socials = Social.objects.all()
-        tags = Tag.objects.all().order_by('name')
-        categories = Category.objects.all().order_by('name')
-        posts = Post.objects.all()
-        data = []
-        for post in posts:
-            item = {
-                'id': post.id,
-                'day': post.publish.day,
-                'year': post.publish.year,
-                'author': post.author.username,
-                'body': post.body,
-                'category': post.category.name,
-                'image': post.image.url,
-                'slug': post.slug,
-                'status': post.status,
-                'tag': post.tag.name,
-                'title': post.title
-            }
-            data.append(item)
-    context = {'tags': tags, 'categories': categories, 'data': data, 'socials': socials, 'banner': banner}
+        context = get_banner('blog')        
     return render(request, 'posts/blog.html', context)
 
 
 def about(request):
     if request.method == 'GET':
-        banner = get_banner('about')
-        tags = Tag.objects.all().order_by('name')
-        categories = Category.objects.all().order_by('name')
-        socials = Social.objects.all()
-        context = {'tags': tags, 'categories': categories, 'socials': socials, 'banner': banner}
+        context = get_banner('about')        
     return render(request, 'posts/about.html', context)
 
 
@@ -81,7 +55,28 @@ def social_links(request):
 
 def get_banner(slug):
     banner = Banner.objects.get(slug=slug)
-    return banner
+    socials = Social.objects.all()
+    tags = Tag.objects.all().order_by('name')
+    categories = Category.objects.all().order_by('name')
+    posts = Post.objects.all().order_by('publish')
+    data = []
+    for post in posts:
+        item = {
+            'id': post.id,
+            'day': post.publish.day,
+            'year': post.publish.year,
+            'author': post.author.username,
+            'body': post.body,
+            'category': post.category.name,
+            'image': post.image.url,
+            'slug': post.slug,
+            'status': post.status,
+            'tag': post.tag.name,
+            'title': post.title
+        }
+        data.append(item)
+    context = {'tags': tags, 'categories': categories, 'data': data, 'socials': socials, 'banner': banner}
+    return context
 
 
 def load_post(request):
