@@ -7,6 +7,9 @@ from django.utils import timezone
 # for authentifications.
 from django.contrib.auth.models import User
 
+class LocalUser(User):
+    image = models.ImageField(upload_to='user_images/', null=True, blank=True)
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=20, default='Lifestyle')
@@ -37,7 +40,7 @@ class Post(models.Model):
 
     title = models.CharField(max_length=50)
     slug = models.SlugField(max_length=250, null=True, blank=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    author = models.ForeignKey(LocalUser, on_delete=models.CASCADE, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, blank=True)
     body = models.TextField()
