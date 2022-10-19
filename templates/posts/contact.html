@@ -58,15 +58,15 @@
                     <div class="content">
                       <ul>
                         <li>
-                          <h5>090-484-8080</h5>
+                          <h5 id="phone" name="phone">090-484-8080</h5>
                           <span>PHONE NUMBER</span>
                         </li>
                         <li>
-                          <h5>info@company.com</h5>
+                          <h5 id="mail" name="mail">info@company.com</h5>
                           <span>EMAIL ADDRESS</span>
                         </li>
                         <li>
-                          <h5>123 Aenean id posuere dui, 
+                          <h5 id="adresse" name="adresse">123 Aenean id posuere dui, 
                           	<br>Praesent laoreet 10660</h5>
                           <span>STREET ADDRESS</span>
                         </li>
@@ -98,8 +98,13 @@
       type:'GET',
       url : '/blog/info',
       dataType: 'JSON',
-      success: function(data){
-          console.log(data)
+      success: function(data){         
+          console.log(data[0])
+          const info = data[0]
+          $('#phone').text(info.phone)
+          $('#mail').text(info.mail)
+          var element = document.getElementById("adresse");
+          element.innerHTML = info.adresse + ',<br>'+ info.complement
       },
       error: function(error){
           console.log(error)
