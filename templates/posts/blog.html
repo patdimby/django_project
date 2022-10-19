@@ -21,9 +21,9 @@
                       <span>{{ obj.tag }}</span>
                       <a href="posts/{{ obj.id }}"><h4>{{ obj.title }}</h4></a>
                       <ul class="post-info">
-                        <li><a href="#">{{ obj.author | title }}</a></li>
-                        <li><a href="#">{{ obj.month }} {{ obj.day }}, {{ obj.year }} </a></li>
-                        <li><a href="#">12 Comments</a></li>
+                        <li><a href="">{{ obj.author | title }}</a></li>
+                        <li><a href="">{{ obj.month }} {{ obj.day }}, {{ obj.year }} </a></li>
+                        <li><a href="">12 Comments</a></li>
                       </ul>
                       <p>{{ obj.body }}</p>
                       <div class="post-options">
@@ -69,18 +69,14 @@
                     </div>
                     <div class="content">
                       <ul>
-                        <li><a href="post-details.html">
-                          <h5>Vestibulum id turpis porttitor sapien facilisis scelerisque</h5>
-                          <span>May 31, 2020</span>
-                        </a></li>
-                        <li><a href="post-details.html">
-                          <h5>Suspendisse et metus nec libero ultrices varius eget in risus</h5>
-                          <span>May 28, 2020</span>
-                        </a></li>
-                        <li><a href="post-details.html">
-                          <h5>Swag hella echo park leggings, shaman cornhole ethical coloring</h5>
-                          <span>May 14, 2020</span>
-                        </a></li>
+                        {% for item in recents %}
+                        <li>
+                          <a href="posts/{{ item.id }}">
+                          <h5>{{ item.title }}</h5>
+                          <span>{{ item.month }} {{ item.day }}, {{ item.year }}</span>
+                         </a>
+                        </li>
+                        {% endfor%}                        
                       </ul>
                     </div>
                   </div>

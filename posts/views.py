@@ -1,5 +1,6 @@
 from distutils.log import info
 import re
+import calendar
 from django.shortcuts import render
 from django.core import serializers
 from django.http import JsonResponse
@@ -34,10 +35,32 @@ def contact(request):
 def retails(request, id):
     if request.method == 'GET':
         post = Post.objects.get(id=id)
+        post.day= post.publish.day
+        post.month = calendar.month_abbr[post.publish.month]
+        post.year = post.publish.year
+        post.image = post.image.url
         banner = get_banner('details')
         tags = Tag.objects.all().order_by('name')
         categories = Category.objects.all().order_by('name')
-        context = {'banner': banner, 'post': post, 'tags': tags, 'categories': categories}
+        drafts = Post.objects.filter(status='DF').order_by('publish')
+        recents = []   
+        for item in drafts:
+            element = {
+                'id': item.id,
+                'month': calendar.month_abbr[item.publish.month],
+                'day': item.publish.day,
+                'year': item.publish.year,
+                'author': item.author.username,
+                'body': item.body,
+                'category': item.category.name,
+                'image': item.image.url,
+                'slug': item.slug,
+                'status': item.status,
+                'tag': item.tag.name,
+                'title': item.title
+            }
+            recents.append(element)
+        context = {'banner': banner, 'obj': post, 'tags': tags, 'categories': categories, 'recents': recents }
         return render(request, "posts/post-details.html", context)
 
 
@@ -60,11 +83,13 @@ def get_banner(slug):
     socials = Social.objects.all()
     tags = Tag.objects.all().order_by('name')
     categories = Category.objects.all().order_by('name')
-    posts = Post.objects.all().order_by('publish')
+    posts = Post.objects.filter(status='PB').order_by('publish')
+    drafts = Post.objects.filter(status='DF').order_by('publish')
     data = []
     for post in posts:
         item = {
             'id': post.id,
+            'month': calendar.month_abbr[post.publish.month],
             'day': post.publish.day,
             'year': post.publish.year,
             'author': post.author.username,
@@ -77,7 +102,25 @@ def get_banner(slug):
             'title': post.title
         }
         data.append(item)
-    context = {'tags': tags, 'categories': categories, 'data': data, 'socials': socials, 'banner': banner}
+    recents = []   
+    for item in drafts:
+        element = {
+            'id': item.id,
+            'month': calendar.month_abbr[item.publish.month],
+            'day': item.publish.day,
+            'year': item.publish.year,
+            'author': item.author.username,
+            'body': item.body,
+            'category': item.category.name,
+            'image': item.image.url,
+            'slug': item.slug,
+            'status': item.status,
+            'tag': item.tag.name,
+            'title': item.title
+        }
+        recents.append(element)
+    context = {'tags': tags, 'categories': categories, 'data': data, 
+               'socials': socials, 'banner': banner, 'recents': recents }
     return context
 
 
