@@ -104,7 +104,7 @@ class Info(models.Model):
     name = models.CharField(max_length=20)
     phone = models.CharField(max_length=50)
     adresse = models.CharField(max_length=50)
-    adresse = models.CharField(max_length=50)
+    complement = models.CharField(max_length=50, default='', blank=True)
     mail = models.EmailField()
     website = models.URLField()
 

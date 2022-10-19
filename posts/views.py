@@ -1,10 +1,11 @@
+from distutils.log import info
 import re
 from django.shortcuts import render
 from django.core import serializers
 from django.http import JsonResponse
 from rest_framework import generics
-from .models import Post, Tag, Category, Social, Banner
-from .serializers import PostSerializer, TagSerializer
+from .models import Post, Tag, Category, Social, Banner, Info
+from .serializers import PostSerializer, TagSerializer, InfoSerializer
 from rest_framework import status
 # from rest_framework.renderers import JSONRenderer
 from rest_framework.decorators import api_view
@@ -38,6 +39,7 @@ def retails(request, id):
         categories = Category.objects.all().order_by('name')
         context = {'banner': banner, 'post': post, 'tags': tags, 'categories': categories}
         return render(request, "posts/post-details.html", context)
+
 
 
 def social_links(request):
@@ -157,3 +159,10 @@ def post_detail(request, pk):
     elif request.method == 'DELETE':
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def info(request):
+    if request.method == 'GET':
+        result = Info.objects.all()        
+        serialize = InfoSerializer(result, many = True)       
+        return Response(serialize.data)
