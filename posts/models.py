@@ -36,6 +36,8 @@ class Category(models.Model):
 class Post(models.Model):
     class Status(models.TextChoices):
         DRAFT = 'DF', 'Draft'
+        BANNER = 'BN','Banner'
+        DEMO = 'DM','Demo'
         PUBLISHED = 'PB', 'Published'
 
     title = models.CharField(max_length=50)

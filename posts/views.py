@@ -32,9 +32,7 @@ def about(request):
 
 
 def contact(request):
-    banner = get_banner('contact')
-    context = {'banner': banner}
-    print(banner)
+    context = get_banner('contact')   
     return render(request, 'posts/contact.html', context)
 
 
