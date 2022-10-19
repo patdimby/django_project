@@ -14,10 +14,15 @@ from rest_framework.response import Response
 
 
 # Create your views here.
-def BlogPage(request):    
+def blog(request):    
     if request.method == 'GET':
         context = get_banner('blog')        
     return render(request, 'posts/blog.html', context)
+
+def home(request):    
+    if request.method == 'GET':
+        context = get_banner('home')        
+    return render(request, 'posts/home.html', context)
 
 
 def about(request):
@@ -29,6 +34,7 @@ def about(request):
 def contact(request):
     banner = get_banner('contact')
     context = {'banner': banner}
+    print(banner)
     return render(request, 'posts/contact.html', context)
 
 
@@ -144,16 +150,6 @@ def load_post(request):
         }
         data.append(item)
     return JsonResponse({'data': data})
-
-
-class PostList(generics.ListCreateAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-
-class PostDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
 
 
 @api_view(['GET', 'POST'])
