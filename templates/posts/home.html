@@ -50,7 +50,7 @@
                       <a href="posts/{{ obj.id }}"><h4>{{ obj.title }}</h4></a>
                       <ul class="post-info">
                         <li><a href="#">{{ obj.author | title }}</a></li>
-                        <li><a href="#">{{ obj.month }} {{ obj.day }}, {{ obj.year }} /a></li>
+                        <li><a href="#">{{ obj.month }} {{ obj.day }}, {{ obj.year }} </a></li>
                         <li><a href="#">12 Comments</a></li>
                       </ul>
                       <p>{{ obj.body }}</p>
@@ -135,7 +135,7 @@
                     <div class="content">
                       <ul>
                         {% for tag in tags %}
-                         <li><a href="">{{ tag }}</a></li>
+                         <li><a href="{{ tag.link }}">{{ tag.name }}</a></li>
                         {% endfor %}
                       </ul>
                     </div>

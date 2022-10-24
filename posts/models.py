@@ -12,7 +12,8 @@ class LocalUser(User):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=20, default='Lifestyle')
+    name = models.CharField(max_length=20,  null=True, blank=True)
+    link = models.URLField(null=True, blank=True)
 
     class Meta:
         # ordering
@@ -24,7 +25,8 @@ class Tag(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=30, default='Nature Lifestyle')
-
+    link = models.URLField(null=True, blank=True)
+    
     class Meta:
         # ordering
         ordering = ['name']

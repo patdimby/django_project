@@ -112,93 +112,32 @@ def parse_post(slug=None, status=None):
         data.append(item)
     return { 'data': data, 'banner': banner,'tags': tags, 'categories': categories , 'socials': socials }
 
+def status_filter(p, keyvalue, status):
+    result = list()
+    for element in p:
+        # Iterate over all the items in dictionary and filter items which has even keys
+        for (key, value) in element.items():            
+        # Check if key is even then add pair to new dictionary
+            if key == keyvalue:
+                if element[key] == status:
+                    result.append(element)   
+    return result
 
 def get_banner(slug):
-    general= parse_post()
-    banner = general['banner']
-    socials = Social.objects.all()
-    tags = Tag.objects.all().order_by('name')
-    categories = Category.objects.all().order_by('name')
-    posts = Post.objects.filter(status='PB').order_by('publish')
-    drafts = Post.objects.filter(status='DF').order_by('publish')
+    general = parse_post(slug)   
+    dt = general['data']   
     demos = []
     homes = []
     if slug == 'home':
-        images = Post.objects.filter(status='BN')
-        homepost = Post.objects.filter(status='DM').order_by('publish')
-        for demo in homepost:
-            item = {
-                'id': demo.id,
-                'month': calendar.month_abbr[demo.publish.month],
-                'day': demo.publish.day,
-                'year': demo.publish.year,
-                'author': demo.author.username,
-                'body': demo.body,
-                'category': demo.category.name,
-                'image': demo.image.url,
-                'slug': demo.slug,
-                'status': demo.status,
-                'tag': demo.tag.name,
-                'title': demo.title,
-                }
-            homes.append(item)
-        for demo in images:
-            item = {
-                'id': demo.id,
-                'month': calendar.month_abbr[demo.publish.month],
-                'day': demo.publish.day,
-                'year': demo.publish.year,
-                'author': demo.author.username,
-                'body': demo.body,
-                'category': demo.category.name,
-                'image': demo.image.url,
-                'slug': demo.slug,
-                'status': demo.status,
-                'tag': demo.tag.name,
-                'title': demo.title,
-                }
-            demos.append(item)
-    data = []
-    for post in posts:
-        item = {
-            'id': post.id,
-            'month': calendar.month_abbr[post.publish.month],
-            'day': post.publish.day,
-            'year': post.publish.year,
-            'author': post.author.username,
-            'body': post.body,
-            'category': post.category.name,
-            'image': post.image.url,
-            'slug': post.slug,
-            'status': post.status,
-            'tag': post.tag.name,
-            'title': post.title,
-            }
-        data.append(item)
-    recents = []
-    for item in drafts:
-        element = {
-            'id': item.id,
-            'month': calendar.month_abbr[item.publish.month],
-            'day': item.publish.day,
-            'year': item.publish.year,
-            'author': item.author.username,
-            'body': item.body,
-            'category': item.category.name,
-            'image': item.image.url,
-            'slug': item.slug,
-            'status': item.status,
-            'tag': item.tag.name,
-            'title': item.title,
-            }
-        recents.append(element)
+        demos = status_filter(dt, 'status', 'BN')
+        homes = status_filter(dt, 'status', 'DM')   
     context = {
-        'tags': tags,
-        'categories': categories,
-        'data': data,
-        'socials': socials,
-        'banner': banner,
-        'recents': recents,
+        'tags': general['tags'],
+        'categories': general['categories'],
+        'data': status_filter(dt, 'status', 'PB'),
+        'socials': general['socials'],
+        'banner': general['banner'],
+        'recents': status_filter(dt, 'status', 'DF'),
         'demos': demos,
         'homes': homes,
         }
