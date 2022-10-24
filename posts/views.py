@@ -1,45 +1,45 @@
-from distutils.log import info
-import re
+# -*- coding: utf-8 -*-
 import calendar
 from django.shortcuts import render
-from django.core import serializers
 from django.http import JsonResponse
-from rest_framework import generics
-from .models import Post, Tag, Category, Social, Banner, Info
-from .serializers import PostSerializer, TagSerializer, InfoSerializer
+from models import Post, Tag, Category, Social, Banner, Info
+from serializers import PostSerializer, TagSerializer, InfoSerializer
 from rest_framework import status
-# from rest_framework.renderers import JSONRenderer
+
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
 # Create your views here.
-def blog(request):    
+
+def blog(request):
     if request.method == 'GET':
-        context = get_banner('blog')        
+        context = get_banner('blog')
     return render(request, 'posts/blog.html', context)
 
-def home(request):    
+
+def home(request):
     if request.method == 'GET':
-        context = get_banner('home')        
+        context = get_banner('home')
     return render(request, 'posts/home.html', context)
 
 
 def about(request):
     if request.method == 'GET':
-        context = get_banner('about')        
+        context = get_banner('about')
     return render(request, 'posts/about.html', context)
 
 
 def contact(request):
-    context = get_banner('contact')   
+    context = get_banner('contact')
     return render(request, 'posts/contact.html', context)
 
 
 def retails(request, id):
     if request.method == 'GET':
         post = Post.objects.get(id=id)
-        post.day= post.publish.day
+        post.day = post.publish.day
         post.month = calendar.month_abbr[post.publish.month]
         post.year = post.publish.year
         post.image = post.image.url
@@ -47,7 +47,7 @@ def retails(request, id):
         tags = Tag.objects.all().order_by('name')
         categories = Category.objects.all().order_by('name')
         drafts = Post.objects.filter(status='DF').order_by('publish')
-        recents = []   
+        recents = []
         for item in drafts:
             element = {
                 'id': item.id,
@@ -61,25 +61,53 @@ def retails(request, id):
                 'slug': item.slug,
                 'status': item.status,
                 'tag': item.tag.name,
-                'title': item.title
-            }
+                'title': item.title,
+                }
             recents.append(element)
-        context = {'banner': banner, 'obj': post, 'tags': tags, 'categories': categories, 'recents': recents }
-        return render(request, "posts/post-details.html", context)
-
+        context = {
+            'banner': banner,
+            'obj': post,
+            'tags': tags,
+            'categories': categories,
+            'recents': recents,
+            }
+        return render(request, 'posts/post-details.html', context)
 
 
 def social_links(request):
     socials = Social.objects.all()
     data = []
     for soc in socials:
-        item = {
-            'id': soc.id,
-            'title': soc.title,
-            'link': soc.link
-        }
+        item = {'id': soc.id, 'title': soc.title, 'link': soc.link}
         data.append(item)
     return JsonResponse({'data': data})
+
+
+def parse_post(slug, status=None):
+    posts = Post.objects.all().order_by('publish')
+    banner = Banner.objects.get(slug=slug)
+    tags = Tag.objects.all().order_by('name')
+    categories = Category.objects.all().order_by('name')
+    if status:
+        posts = posts.filter(status)
+    data = []
+    for demo in posts:
+        item = {
+            'id': demo.id,
+            'month': calendar.month_abbr[demo.publish.month],
+            'day': demo.publish.day,
+            'year': demo.publish.year,
+            'author': demo.author.username,
+            'body': demo.body,
+            'category': demo.category.name,
+            'image': demo.image.url,
+            'slug': demo.slug,
+            'status': demo.status,
+            'tag': demo.tag.name,
+            'title': demo.title,
+            }
+        data.append(item)
+    return { 'data': data, 'banner': banner,'tags': tags, 'categories': categories }
 
 
 def get_banner(slug):
@@ -87,11 +115,11 @@ def get_banner(slug):
     socials = Social.objects.all()
     tags = Tag.objects.all().order_by('name')
     categories = Category.objects.all().order_by('name')
-    posts = Post.objects.filter(status='PB').order_by('publish')   
+    posts = Post.objects.filter(status='PB').order_by('publish')
     drafts = Post.objects.filter(status='DF').order_by('publish')
     demos = []
     homes = []
-    if(slug == 'home'):
+    if slug == 'home':
         images = Post.objects.filter(status='BN')
         homepost = Post.objects.filter(status='DM').order_by('publish')
         for demo in homepost:
@@ -107,9 +135,9 @@ def get_banner(slug):
                 'slug': demo.slug,
                 'status': demo.status,
                 'tag': demo.tag.name,
-                'title': demo.title
-            }
-            homes.append(item)   
+                'title': demo.title,
+                }
+            homes.append(item)
         for demo in images:
             item = {
                 'id': demo.id,
@@ -123,9 +151,9 @@ def get_banner(slug):
                 'slug': demo.slug,
                 'status': demo.status,
                 'tag': demo.tag.name,
-                'title': demo.title
-            }
-            demos.append(item)   
+                'title': demo.title,
+                }
+            demos.append(item)
     data = []
     for post in posts:
         item = {
@@ -140,10 +168,10 @@ def get_banner(slug):
             'slug': post.slug,
             'status': post.status,
             'tag': post.tag.name,
-            'title': post.title
-        }
+            'title': post.title,
+            }
         data.append(item)
-    recents = []   
+    recents = []
     for item in drafts:
         element = {
             'id': item.id,
@@ -157,11 +185,19 @@ def get_banner(slug):
             'slug': item.slug,
             'status': item.status,
             'tag': item.tag.name,
-            'title': item.title
+            'title': item.title,
+            }
+        recents.append(element)
+    context = {
+        'tags': tags,
+        'categories': categories,
+        'data': data,
+        'socials': socials,
+        'banner': banner,
+        'recents': recents,
+        'demos': demos,
+        'homes': homes,
         }
-        recents.append(element)    
-    context = {'tags': tags, 'categories': categories, 'data': data, 
-               'socials': socials, 'banner': banner, 'recents': recents, 'demos': demos, 'homes': homes  }
     return context
 
 
@@ -181,8 +217,8 @@ def load_post(request):
             'slug': post.slug,
             'status': post.status,
             'tag': post.tag.name,
-            'title': post.title
-        }
+            'title': post.title,
+            }
         data.append(item)
     return JsonResponse({'data': data})
 
@@ -197,8 +233,10 @@ def post_list(request):
         post_serializer = PostSerializer(data=request.data)
         if post_serializer.is_valid():
             post_serializer.save()
-            return Response(post_serializer.data, status=status.HTTP_201_CREATED)
-    return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(post_serializer.data,
+                            status=status.HTTP_201_CREATED)
+    return Response(post_serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'POST'])
@@ -211,8 +249,10 @@ def tag_list(request):
         tag_serializer = TagSerializer(data=request.data)
         if tag_serializer.is_valid():
             tag_serializer.save()
-            return Response(tag_serializer.data, status=status.HTTP_201_CREATED)
-    return Response(tag_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(tag_serializer.data,
+                            status=status.HTTP_201_CREATED)
+    return Response(tag_serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -229,14 +269,16 @@ def post_detail(request, pk):
         if post_serializer.is_valid():
             post_serializer.save()
             return Response(post_serializer.data)
-        return Response(post_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(post_serializer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @api_view(['GET'])
 def info(request):
     if request.method == 'GET':
-        result = Info.objects.all()        
-        serialize = InfoSerializer(result, many = True)       
+        result = Info.objects.all()
+        serialize = InfoSerializer(result, many=True)
         return Response(serialize.data)
