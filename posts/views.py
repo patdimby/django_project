@@ -2,8 +2,8 @@
 import calendar
 from django.shortcuts import render
 from django.http import JsonResponse
-from models import Post, Tag, Category, Social, Banner, Info
-from serializers import PostSerializer, TagSerializer, InfoSerializer
+from .models import Post, Tag, Category, Social, Banner, Info
+from .serializers import PostSerializer, TagSerializer, InfoSerializer
 from rest_framework import status
 
 
@@ -83,9 +83,12 @@ def social_links(request):
     return JsonResponse({'data': data})
 
 
-def parse_post(slug, status=None):
+def parse_post(slug=None, status=None):
     posts = Post.objects.all().order_by('publish')
-    banner = Banner.objects.get(slug=slug)
+    socials = Social.objects.all()
+    banner = []
+    if slug:        
+        banner = Banner.objects.get(slug=slug)
     tags = Tag.objects.all().order_by('name')
     categories = Category.objects.all().order_by('name')
     if status:
@@ -107,11 +110,12 @@ def parse_post(slug, status=None):
             'title': demo.title,
             }
         data.append(item)
-    return { 'data': data, 'banner': banner,'tags': tags, 'categories': categories }
+    return { 'data': data, 'banner': banner,'tags': tags, 'categories': categories , 'socials': socials }
 
 
 def get_banner(slug):
-    banner = Banner.objects.get(slug=slug)
+    general= parse_post()
+    banner = general['banner']
     socials = Social.objects.all()
     tags = Tag.objects.all().order_by('name')
     categories = Category.objects.all().order_by('name')
@@ -201,26 +205,10 @@ def get_banner(slug):
     return context
 
 
-def load_post(request):
-    posts = Post.objects.all()
-    data = []
-    for post in posts:
-        item = {
-            'id': post.id,
-            'day': post.publish.day,
-            'month': post.publish.month,
-            'year': post.publish.year,
-            'author': post.author.username,
-            'body': post.body,
-            'category': post.category.name,
-            'image': post.image.url,
-            'slug': post.slug,
-            'status': post.status,
-            'tag': post.tag.name,
-            'title': post.title,
-            }
-        data.append(item)
-    return JsonResponse({'data': data})
+def load_post(request):   
+    posts = parse_post()
+    data = posts['data']
+    return JsonResponse({ 'data': data })
 
 
 @api_view(['GET', 'POST'])
