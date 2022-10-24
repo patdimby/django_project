@@ -1,4 +1,5 @@
 from distutils.command.upload import upload
+from email import message
 from email.policy import default
 
 from django.conf import settings  # reading conf
@@ -62,7 +63,12 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
-
+class Message(models.Model):
+    name = models.CharField(max_length=80)
+    email = models.EmailField()
+    subject  = models.CharField(max_length=100)
+    message = models.TextField()
+    author = models.ForeignKey(LocalUser, on_delete=models.CASCADE, null=True, blank=True)
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
