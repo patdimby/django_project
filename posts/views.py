@@ -87,8 +87,45 @@ def get_banner(slug):
     socials = Social.objects.all()
     tags = Tag.objects.all().order_by('name')
     categories = Category.objects.all().order_by('name')
-    posts = Post.objects.filter(status='PB').order_by('publish')
+    posts = Post.objects.filter(status='PB').order_by('publish')   
     drafts = Post.objects.filter(status='DF').order_by('publish')
+    demos = []
+    homes = []
+    if(slug == 'home'):
+        images = Post.objects.filter(status='BN')
+        homepost = Post.objects.filter(status='DM').order_by('publish')
+        for demo in homepost:
+            item = {
+                'id': demo.id,
+                'month': calendar.month_abbr[demo.publish.month],
+                'day': demo.publish.day,
+                'year': demo.publish.year,
+                'author': demo.author.username,
+                'body': demo.body,
+                'category': demo.category.name,
+                'image': demo.image.url,
+                'slug': demo.slug,
+                'status': demo.status,
+                'tag': demo.tag.name,
+                'title': demo.title
+            }
+            homes.append(item)   
+        for demo in images:
+            item = {
+                'id': demo.id,
+                'month': calendar.month_abbr[demo.publish.month],
+                'day': demo.publish.day,
+                'year': demo.publish.year,
+                'author': demo.author.username,
+                'body': demo.body,
+                'category': demo.category.name,
+                'image': demo.image.url,
+                'slug': demo.slug,
+                'status': demo.status,
+                'tag': demo.tag.name,
+                'title': demo.title
+            }
+            demos.append(item)   
     data = []
     for post in posts:
         item = {
@@ -122,9 +159,9 @@ def get_banner(slug):
             'tag': item.tag.name,
             'title': item.title
         }
-        recents.append(element)
+        recents.append(element)    
     context = {'tags': tags, 'categories': categories, 'data': data, 
-               'socials': socials, 'banner': banner, 'recents': recents }
+               'socials': socials, 'banner': banner, 'recents': recents, 'demos': demos, 'homes': homes  }
     return context
 
 
