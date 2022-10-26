@@ -32,8 +32,7 @@ INSTALLED_APPS = [
     "todos.apps.TodosConfig",
     "posts.apps.PostsConfig", # new
     # 3rd party
-    'anymail',
-    'django_premailer'
+    'anymail',   
     "rest_framework",
     "corsheaders", # new
     "crispy_forms",
@@ -144,7 +143,7 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ANYMAIL = {
-    "SENDINBLUE_API_KEY": "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",
+    "SENDINBLUE_API_KEY": "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",
     "SENDINBLUE_API_URL": "https://api.sendinblue.com/v3/",
 }
 

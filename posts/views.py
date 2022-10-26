@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 import calendar
+from django.conf import settings
+from pathlib import Path
+from email.mime.image import MIMEImage
+
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.views.generic import CreateView
 from .models import Post, Tag, Category, Social, Banner, Info, Message
 from .serializers import PostSerializer, TagSerializer, InfoSerializer
@@ -40,27 +44,38 @@ def contact(request):
     context = get_banner('contact')
     if request.method == 'GET':       
         context['form'] = MessageForm()
+        return render(request, 'posts/contact.html', context)
     else:
         name = request.POST.get('name')
         subject = request.POST.get('subject')
         message = request.POST.get('message')
         email = request.POST.get('email')       
-        form = MessageForm()
+        form = MessageForm(request.POST)
+        image_path = '/media/hand.jpg'
+        image_name = Path(image_path).name
         if form.is_valid():
-            form.save()
+            form.save()            
             send_mail(subject, message, email, [email])
             msg = EmailMultiAlternatives(
-            subject = request.POST.get('subject'),
-            body = request.POST.get('message'),
-            from_email = name + " <"+ email + ">",
-            to = ["Dimbisoa Patrick RANOELISON <patdimby@outlook.fr>", "patdimby@outlook.fr"],
-            reply_to = ["Helpdesk <patdimby@outlook.fr>"]
-            )
+                subject = subject,
+                body = message,
+                from_email = name + " <"+ email + ">",
+                to = ["Dimbisoa Patrick RANOELISON <patdimby@outlook.fr>", "patdimby@outlook.fr"],
+                reply_to = ["Helpdesk <patdimby@outlook.fr>"])
             msg.tags = ["activation", "onboarding"]
-            msg.track_clicks = True
+            # Include an inline image in the html:
+            # logo_cid = attach_inline_image_file(msg, settings.STATIC_URL + "images/hand.jpg")
+            # html = """<img alt="Logo" src="cid:{logo_cid}">
+            # <p>Please <a href="https://example.com/activate">activate</a>
+            # your account</p>""".format(logo_cid=logo_cid)
+            # msg.attach_alternative(html, "text/html")          
             # Send it:
-            msg.send()
-    return render(request, 'posts/contact.html', context)
+            # msg.send()
+            context = get_banner('message')
+            context['form'] = form
+            return render(request, 'posts/send.html', context)
+        else:
+            return HttpResponse('Error')
 
 
 def retails(request, id):
@@ -120,8 +135,7 @@ def parse_post(slug=None, status=None):
     if status:
         if slug != 'blog':
             posts = posts.filter(status)    
-    data = simple_parse(posts)
-    print(len(data))
+    data = simple_parse(posts)   
     return { 'data': data, 'banner': banner,'tags': tags, 'categories': categories , 'socials': socials }
 
 def status_filter(p, keyvalue, status):
@@ -211,7 +225,7 @@ def post_detail(request, pk):
 def info(request):
     if request.method == 'GET':
         result = Info.objects.all()
-        serialize = InfoSerializer(result, many=True)
+        serialize = InfoSerializer(result, many=True)        
         return Response(serialize.data)
 
 

@@ -2,18 +2,35 @@
 {% load static %}
 {% block heading %}
 {% include 'incs/nav_post.html' %}
-{% endblock %}
+{% endblock %}  
 {% block content %}
-<div class="jumbotron">
-    <h1 class="display-4">Your Mail has been send Successfully!</h1>
-    <p class="lead">This is a simple django app to send mail to anyone!</p>
-    <hr class="my-4">
-    <p>Although Python provides a mail sending interface via the smtplib module, Django provides a couple of light
-        wrappers over it. These wrappers are provided to make sending email extra quick, to help test email sending
-        during development, and to provide support for platforms that can’t use SMTP.</p>
-     <a class="btn btn-primary btn-lg" href="{% url 'contact' %}" role="button">Return to contact page.</a>
-</div>
+<!-- Page Content -->  
+<section class="about-us">
+    <div class="container">      	
+      <div class="row">
+        <div class="col-lg-12">
+          <img src="{% static 'images/maquette.jpg' %}" alt="">
+          <p>Although Python provides a mail sending interface via the smtplib module, Django provides a couple of light
+            wrappers over it. These wrappers are provided to make sending email extra quick, to help test email sending
+            during development, and to provide support for platforms that can’t use SMTP.</p>
+        </div>
+      </div>      
+      <div class="row">
+        <div class="col-lg-12">
+          <ul class="social-icons">
+            {% for soc in socials %}
+            <li><a href="{{ soc.link }}"><i class="fab fa-{{ soc.title|lower }}"></i></a></li>
+            {% endfor %}              
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}
-{% block footer %}
+{% block footer %}   
 {% include 'incs/footer_post.html' %}
 {% endblock %}
+{% block scripts %}    
+<script src="{% static 'js/main.js' %}"></script>   
+{% endblock %}
+
