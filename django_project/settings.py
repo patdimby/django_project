@@ -19,7 +19,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [    
+INSTALLED_APPS = [ 
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     "todos.apps.TodosConfig",
     "posts.apps.PostsConfig", # new
     # 3rd party
+    'anymail',
+    'django_premailer'
     "rest_framework",
     "corsheaders", # new
     "crispy_forms",
@@ -140,3 +142,11 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+ANYMAIL = {
+    "SENDINBLUE_API_KEY": "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",
+    "SENDINBLUE_API_URL": "https://api.sendinblue.com/v3/",
+}
+
+EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
+DEFAULT_FROM_EMAIL = "patdimby@outlook.fr"

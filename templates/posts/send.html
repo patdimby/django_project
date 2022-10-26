@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block heading %}
+{% include 'incs/nav_post.html' %}
+{% endblock %}
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Your Mail has been send Successfully!</h1>
+    <p class="lead">This is a simple django app to send mail to anyone!</p>
+    <hr class="my-4">
+    <p>Although Python provides a mail sending interface via the smtplib module, Django provides a couple of light
+        wrappers over it. These wrappers are provided to make sending email extra quick, to help test email sending
+        during development, and to provide support for platforms that can’t use SMTP.</p>
+     <a class="btn btn-primary btn-lg" href="{% url 'contact' %}" role="button">Return to contact page.</a>
+</div>
+{% endblock %}
+{% block footer %}
+{% include 'incs/footer_post.html' %}
+{% endblock %}

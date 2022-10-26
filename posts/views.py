@@ -6,8 +6,11 @@ from django.views.generic import CreateView
 from .models import Post, Tag, Category, Social, Banner, Info, Message
 from .serializers import PostSerializer, TagSerializer, InfoSerializer
 from rest_framework import status
-from .forms import MessageForm
 
+from .forms import MessageForm
+from django.core.mail import EmailMultiAlternatives
+from django.core.mail import send_mail
+from anymail.message import attach_inline_image_file
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -38,9 +41,25 @@ def contact(request):
     if request.method == 'GET':       
         context['form'] = MessageForm()
     else:
+        name = request.POST.get('name')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        email = request.POST.get('email')       
         form = MessageForm()
         if form.is_valid():
             form.save()
+            send_mail(subject, message, email, [email])
+            msg = EmailMultiAlternatives(
+            subject = request.POST.get('subject'),
+            body = request.POST.get('message'),
+            from_email = name + " <"+ email + ">",
+            to = ["Dimbisoa Patrick RANOELISON <patdimby@outlook.fr>", "patdimby@outlook.fr"],
+            reply_to = ["Helpdesk <patdimby@outlook.fr>"]
+            )
+            msg.tags = ["activation", "onboarding"]
+            msg.track_clicks = True
+            # Send it:
+            msg.send()
     return render(request, 'posts/contact.html', context)
 
 
