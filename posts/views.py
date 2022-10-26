@@ -37,44 +37,27 @@ def contact(request):
     context = get_banner('contact')
     if request.method == 'GET':       
         context['form'] = MessageForm()
-        return render(request, 'posts/contact.html', context)
+    else:
+        form = MessageForm()
+        if form.is_valid():
+            form.save()
+    return render(request, 'posts/contact.html', context)
 
 
 def retails(request, id):
     if request.method == 'GET':
+        tags = Tag.objects.all().order_by('name')
+        categories = Category.objects.all().order_by('name')
+        drafts = Post.objects.filter(status='DF').order_by('publish')
         post = Post.objects.get(id=id)
         post.day = post.publish.day
         post.month = calendar.month_abbr[post.publish.month]
         post.year = post.publish.year
         post.image = post.image.url
-        banner = get_banner('details')
-        tags = Tag.objects.all().order_by('name')
-        categories = Category.objects.all().order_by('name')
-        drafts = Post.objects.filter(status='DF').order_by('publish')
-        recents = []
-        for item in drafts:
-            element = {
-                'id': item.id,
-                'month': calendar.month_abbr[item.publish.month],
-                'day': item.publish.day,
-                'year': item.publish.year,
-                'author': item.author.username,
-                'body': item.body,
-                'category': item.category.name,
-                'image': item.image.url,
-                'slug': item.slug,
-                'status': item.status,
-                'tag': item.tag.name,
-                'title': item.title,
-                }
-            recents.append(element)
-        context = {
-            'banner': banner,
-            'obj': post,
-            'tags': tags,
-            'categories': categories,
-            'recents': recents,
-            }
+        banner = get_banner('details')        
+        recents = simple_parse(drafts)
+        context = {'banner': banner,'obj': post, 'tags': tags, 
+                   'categories': categories, 'recents': recents,  }
         return render(request, 'posts/post-details.html', context)
 
 
@@ -86,18 +69,8 @@ def social_links(request):
         data.append(item)
     return JsonResponse({'data': data})
 
-
-def parse_post(slug=None, status=None):
-    posts = Post.objects.all().order_by('publish')
-    socials = Social.objects.all()
-    banner = []
-    if slug:        
-        banner = Banner.objects.get(slug=slug)
-    tags = Tag.objects.all().order_by('name')
-    categories = Category.objects.all().order_by('name')
-    if status:
-        posts = posts.filter(status)
-    data = []
+def simple_parse(posts):
+    data = list()
     for demo in posts:
         item = {
             'id': demo.id,
@@ -114,14 +87,28 @@ def parse_post(slug=None, status=None):
             'title': demo.title,
             }
         data.append(item)
+    return data
+
+def parse_post(slug=None, status=None):
+    posts = Post.objects.all().order_by('publish')
+    socials = Social.objects.all()
+    tags = Tag.objects.all().order_by('name')
+    categories = Category.objects.all().order_by('name')    
+    if slug:        
+        banner = Banner.objects.get(slug=slug)
+    else:
+        banner = []
+    if status:
+        if slug != 'blog':
+            posts = posts.filter(status)    
+    data = simple_parse(posts)
+    print(len(data))
     return { 'data': data, 'banner': banner,'tags': tags, 'categories': categories , 'socials': socials }
 
 def status_filter(p, keyvalue, status):
     result = list()
-    for element in p:
-        # Iterate over all the items in dictionary and filter items which has even keys
-        for (key, value) in element.items():            
-        # Check if key is even then add pair to new dictionary
+    for element in p:   
+        for (key, value) in element.items():
             if key == keyvalue:
                 if element[key] == status:
                     result.append(element)   
@@ -129,23 +116,17 @@ def status_filter(p, keyvalue, status):
 
 def get_banner(slug):
     general = parse_post(slug)   
-    dt = general['data']   
-    demos = []
-    homes = []
+    dt = general['data']
     if slug == 'home':
         demos = status_filter(dt, 'status', 'BN')
-        homes = status_filter(dt, 'status', 'DM')   
-    context = {
-        'tags': general['tags'],
-        'categories': general['categories'],
-        'data': status_filter(dt, 'status', 'PB'),
-        'socials': general['socials'],
-        'banner': general['banner'],
-        'recents': status_filter(dt, 'status', 'DF'),
-        'demos': demos,
-        'homes': homes,
-        }
-    return context
+        homes = status_filter(dt, 'status', 'DM')
+    else:
+        demos = []
+        homes = []   
+    return { 'tags': general['tags'],'categories': general['categories'],
+        'data': status_filter(dt, 'status', 'PB'), 'socials': general['socials'],
+        'banner': general['banner'], 'recents': status_filter(dt, 'status', 'DF'),
+        'demos': demos,'homes': homes, }
 
 
 def load_post(request):   
