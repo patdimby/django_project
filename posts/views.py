@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import calendar
 from django.conf import settings
-from pathlib import Path
-from email.mime.image import MIMEImage
+# from pathlib import Path
+# from email.mime.image import MIMEImage
+# from anymail.message import attach_inline_image_file
 
 from django.shortcuts import render
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.generic import CreateView
 from .models import Post, Tag, Category, Social, Banner, Info, Message
 from .serializers import PostSerializer, TagSerializer, InfoSerializer
@@ -14,7 +15,7 @@ from rest_framework import status
 from .forms import MessageForm
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail import send_mail
-from anymail.message import attach_inline_image_file
+
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -52,7 +53,7 @@ def contact(request):
         email = request.POST.get('email')       
         form = MessageForm(request.POST)
         image_path = '/media/hand.jpg'
-        image_name = Path(image_path).name
+        # image_name = Path(image_path).name
         if form.is_valid():
             form.save()            
             send_mail(subject, message, email, [email])
@@ -70,7 +71,7 @@ def contact(request):
             # your account</p>""".format(logo_cid=logo_cid)
             # msg.attach_alternative(html, "text/html")          
             # Send it:
-            # msg.send()
+            msg.send()
             context = get_banner('message')
             context['form'] = form
             return render(request, 'posts/send.html', context)
