@@ -2,9 +2,11 @@
 import calendar
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Post, Tag, Category, Social, Banner, Info
+from django.views.generic import CreateView
+from .models import Post, Tag, Category, Social, Banner, Info, Message
 from .serializers import PostSerializer, TagSerializer, InfoSerializer
 from rest_framework import status
+from .forms import MessageForm
 
 
 from rest_framework.decorators import api_view
@@ -33,7 +35,9 @@ def about(request):
 
 def contact(request):
     context = get_banner('contact')
-    return render(request, 'posts/contact.html', context)
+    if request.method == 'GET':       
+        context['form'] = MessageForm()
+        return render(request, 'posts/contact.html', context)
 
 
 def retails(request, id):
@@ -209,3 +213,8 @@ def info(request):
         result = Info.objects.all()
         serialize = InfoSerializer(result, many=True)
         return Response(serialize.data)
+
+
+class MessageCreateView(CreateView):
+    model = Message
+    fields = ('name', 'email', 'subject', 'message',)

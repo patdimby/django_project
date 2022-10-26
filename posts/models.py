@@ -1,6 +1,5 @@
 from distutils.command.upload import upload
-from email import message
-from email.policy import default
+
 
 from django.conf import settings  # reading conf
 from django.db import models
