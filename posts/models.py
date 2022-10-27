@@ -1,7 +1,6 @@
 from distutils.command.upload import upload
 
 
-from django.conf import settings  # reading conf
 from django.db import models
 from django.utils import timezone
 # for authentifications.
@@ -74,6 +73,7 @@ class Comment(models.Model):
     name = models.CharField(max_length=80)
     email = models.EmailField()
     body = models.TextField()
+    author = models.ForeignKey(LocalUser, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)

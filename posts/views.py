@@ -8,7 +8,7 @@ from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.generic import CreateView
-from .models import Post, Tag, Category, Social, Banner, Info, Message
+from .models import Post, Tag, Category, Social, Banner, Info, Message, Comment
 from .serializers import PostSerializer, TagSerializer, InfoSerializer
 from rest_framework import status
 
@@ -80,20 +80,61 @@ def contact(request):
 
 
 def retails(request, id):
-    if request.method == 'GET':
-        tags = Tag.objects.all().order_by('name')
-        categories = Category.objects.all().order_by('name')
-        drafts = Post.objects.filter(status='DF').order_by('publish')
+    if request.method == 'GET':       
         post = Post.objects.get(id=id)
         post.day = post.publish.day
         post.month = calendar.month_abbr[post.publish.month]
         post.year = post.publish.year
         post.image = post.image.url
-        banner = get_banner('details')        
-        recents = simple_parse(drafts)
-        context = {'banner': banner,'obj': post, 'tags': tags, 
-                   'categories': categories, 'recents': recents,  }
+        comments = list()       
+        arr = Comment.objects.filter(post=post)
+        for demo in arr:
+            item = {
+            'id': demo.id,
+            'body': demo.body,
+            'month': calendar.month_abbr[demo.updated_at.month],
+            'image': settings.MEDIA_URL + str(demo.author.image),
+            'day': demo.updated_at.day,
+            'year': demo.updated_at.year,
+            'author': demo.author.first_name + " " + demo.author.last_name,}
+            comments.append(item)            
+        context = get_banner('details')
+        context['numbers'] = len(comments)
+        context['comments'] = comments      
+        context['form'] = MessageForm()
         return render(request, 'posts/post-details.html', context)
+    else:
+        name = request.POST.get('name')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        email = request.POST.get('email')       
+        form = MessageForm(request.POST)
+        image_path = '/media/hand.jpg'
+        # image_name = Path(image_path).name
+        if form.is_valid():
+            form.save()            
+            send_mail(subject, message, email, [email])
+            msg = EmailMultiAlternatives(
+                subject = subject,
+                body = message,
+                from_email = name + " <"+ email + ">",
+                to = ["Dimbisoa Patrick RANOELISON <patdimby@outlook.fr>", "patdimby@outlook.fr"],
+                reply_to = ["Helpdesk <patdimby@outlook.fr>"])
+            msg.tags = ["activation", "onboarding"]
+            # Include an inline image in the html:
+            # logo_cid = attach_inline_image_file(msg, settings.STATIC_URL + "images/hand.jpg")
+            # html = """<img alt="Logo" src="cid:{logo_cid}">
+            # <p>Please <a href="https://example.com/activate">activate</a>
+            # your account</p>""".format(logo_cid=logo_cid)
+            # msg.attach_alternative(html, "text/html")          
+            # Send it:
+            msg.send()
+            context = get_banner('message')
+            context['form'] = form
+            return render(request, 'posts/send.html', context)
+        else:
+            return HttpResponse('Error')
+
 
 
 def social_links(request):
@@ -110,6 +151,7 @@ def simple_parse(posts):
         item = {
             'id': demo.id,
             'month': calendar.month_abbr[demo.publish.month],
+            'commentlength': len(Comment.objects.filter(post=demo)),
             'day': demo.publish.day,
             'year': demo.publish.year,
             'author': demo.author.username,
@@ -121,7 +163,7 @@ def simple_parse(posts):
             'tag': demo.tag.name,
             'title': demo.title,
             }
-        data.append(item)
+        data.append(item)    
     return data
 
 def parse_post(slug=None, status=None):
