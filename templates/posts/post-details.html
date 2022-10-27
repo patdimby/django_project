@@ -23,27 +23,10 @@
                       <ul class="post-info">
                         <li><a href="">{{ obj.author | title }}</a></li>
                         <li><a href="">{{ obj.month }} {{ obj.day }}, {{ obj.year }} </a></li>
-                        <li><a href="">12 Comments</a></li>
+                        <li><a href="">{{ obj.commentlength }} Comments</a></li>
                       </ul>
                       <p>{{ obj.body }}</p>
-                     <div class="post-options">
-                        <div class="row">
-                          <div class="col-6">
-                            <ul class="post-tags">
-                              <li><i class="fa fa-tags"></i></li>
-                              <li><a href="#">Best Templates</a>,</li>
-                              <li><a href="#">TemplateMo</a></li>
-                            </ul>
-                          </div>
-                          <div class="col-6">
-                            <ul class="post-share">
-                              <li><i class="fa fa-share-alt"></i></li>
-                              <li><a href="#">Facebook</a>,</li>
-                              <li><a href="#"> Twitter</a></li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
+                      {% include 'fixs/details.html' %}
                     </div>
                   </div>
                 </div>
