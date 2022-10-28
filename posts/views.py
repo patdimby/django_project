@@ -109,7 +109,7 @@ def retails(request, id):
         message = request.POST.get('message')
         email = request.POST.get('email')       
         form = MessageForm(request.POST)
-        image_path = '/media/hand.jpg'
+        # image_path = '/media/hand.jpg'
         # image_name = Path(image_path).name
         if form.is_valid():
             form.save()            
@@ -211,57 +211,7 @@ def load_post(request):
     return JsonResponse({ 'data': data })
 
 
-@api_view(['GET', 'POST'])
-def post_list(request):
-    if request.method == 'GET':
-        posts = Post.objects.all()
-        posts_serializer = PostSerializer(posts, many=True)
-        return Response(posts_serializer.data)
-    elif request.method == 'POST':
-        post_serializer = PostSerializer(data=request.data)
-        if post_serializer.is_valid():
-            post_serializer.save()
-            return Response(post_serializer.data,
-                            status=status.HTTP_201_CREATED)
-    return Response(post_serializer.errors,
-                    status=status.HTTP_400_BAD_REQUEST)
 
-
-@api_view(['GET', 'POST'])
-def tag_list(request):
-    if request.method == 'GET':
-        tags = Tag.objects.all()
-        tags_serializer = TagSerializer(tags, many=True)
-        return Response(tags_serializer.data)
-    elif request.method == 'POST':
-        tag_serializer = TagSerializer(data=request.data)
-        if tag_serializer.is_valid():
-            tag_serializer.save()
-            return Response(tag_serializer.data,
-                            status=status.HTTP_201_CREATED)
-    return Response(tag_serializer.errors,
-                    status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-def post_detail(request, pk):
-    try:
-        post = post.objects.get(pk=pk)
-    except post.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    if request.method == 'GET':
-        post_serializer = PostSerializer(post)
-        return Response(post_serializer.data)
-    elif request.method == 'PUT':
-        post_serializer = PostSerializer(post, data=request.data)
-        if post_serializer.is_valid():
-            post_serializer.save()
-            return Response(post_serializer.data)
-        return Response(post_serializer.errors,
-                        status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == 'DELETE':
-        post.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])
@@ -272,6 +222,3 @@ def info(request):
         return Response(serialize.data)
 
 
-class MessageCreateView(CreateView):
-    model = Message
-    fields = ('name', 'email', 'subject', 'message',)
