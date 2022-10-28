@@ -1,9 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block heading %}
-{% include 'incs/nav_post.html' %}
-{% endblock %}  
 <!-- Page Content -->   
     {% block content %}    
     <section class="contact-us">
@@ -79,27 +76,23 @@
         </div>
       </div>
     </section>
-
     {% endblock %}
-    {% block footer %}
-    {% include 'incs/footer_post.html' %}    
-    {% endblock %}
-    {% block scripts %}
+    {% block scripts %} 
     <script>
-    $.ajax({
-      type:'GET',
-      url : '/blog/info',
-      dataType: 'JSON',
-      success: function(data){        
-          const info = data[0]
-          $('#phone').text(info.phone)
-          $('#mail').text(info.mail)
-          var element = document.getElementById("adresse");
-          element.innerHTML = info.adresse + ',<br>'+ info.complement
-      },
-      error: function(error){
-          console.log(error)
-      }
-  });
-</script>
-    {% endblock %}
+      $.ajax({
+        type:'GET',
+        url : '/blog/info',
+        dataType: 'JSON',
+        success: function(data){        
+            const info = data[0]
+            $('#phone').text(info.phone)
+            $('#mail').text(info.mail)
+            var element = document.getElementById("adresse");
+            element.innerHTML = info.adresse + ',<br>'+ info.complement
+        },
+        error: function(error){
+            console.log(error)
+        }
+    });
+    </script>    
+    {% endblock scripts %}

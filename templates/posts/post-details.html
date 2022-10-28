@@ -1,9 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block heading %}
-{% include 'incs/nav_post.html' %}
-{% endblock %} 
     <!-- Page Content -->
     {% block content %} 
     <section class="blog-posts grid-system">
@@ -151,10 +148,4 @@
       </div>
     </section>
 
-    {% endblock %}
-    {% block footer %}
-    {% include 'incs/footer_post.html' %}    
-    {% endblock %}
-    {% block scripts %}    
-    <script src="{% static 'js/main.js' %}"></script>   
-    {% endblock %}
+    {% endblock %}    

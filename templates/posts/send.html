@@ -1,8 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
-{% block heading %}
-{% include 'incs/nav_post.html' %}
-{% endblock %}  
+{% load static %} 
 {% block content %}
 <!-- Page Content -->  
 <section class="about-us">
@@ -27,10 +24,5 @@
     </div>
   </section>
 {% endblock %}
-{% block footer %}   
-{% include 'incs/footer_post.html' %}
-{% endblock %}
-{% block scripts %}    
-<script src="{% static 'js/main.js' %}"></script>   
-{% endblock %}
+
 
