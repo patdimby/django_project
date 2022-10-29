@@ -143,7 +143,7 @@ def social_links(request):
     for soc in socials:
         item = {'id': soc.id, 'title': soc.title, 'link': soc.link}
         data.append(item)
-    return JsonResponse({'data': data})
+    return JsonResponse({ 'data': data })
 
 def simple_parse(posts):
     data = list()
