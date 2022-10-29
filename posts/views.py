@@ -102,6 +102,7 @@ def retails(request, id):
         context['numbers'] = len(comments)
         context['comments'] = comments      
         context['form'] = MessageForm()
+        context['obj'] = post
         return render(request, 'posts/post-details.html', context)
     else:
         name = request.POST.get('name')

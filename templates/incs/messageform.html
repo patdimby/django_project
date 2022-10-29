@@ -1,0 +1,25 @@
+{% load crispy_forms_tags %}
+<div class="content">                     
+    <form id="comment" action="" method="post">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          {{ form.name|as_crispy_field }}
+        </div>
+        <div class="col-md-6 col-sm-12">
+          {{ form.email|as_crispy_field }}
+        </div>
+        <div class="col-md-12 col-sm-12">
+          {{ form.subject|as_crispy_field }}
+        </div>
+        <div class="col-lg-12">
+          {{ form.message|as_crispy_field }}
+        </div>
+        <div class="col-lg-12">
+          <fieldset>
+            <button type="submit" id="form-submit" class="main-button">Send Message</button>
+          </fieldset>
+        </div>
+      </div>
+    </form>
+</div>

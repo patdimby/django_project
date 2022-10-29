@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load crispy_forms_tags %}
 <!-- Page Content -->   
     {% block content %}    
     <section class="contact-us">
@@ -14,30 +13,7 @@
                     <div class="sidebar-heading">
                       <h2>Send us a message</h2>
                     </div>
-                    <div class="content">                     
-                      <form id="comment" action="" method="post"  novalidate>
-                        {% csrf_token %}
-                        <div class="row">
-                          <div class="col-md-6 col-sm-12">
-                            {{ form.name|as_crispy_field }}
-                          </div>
-                          <div class="col-md-6 col-sm-12">
-                            {{ form.email|as_crispy_field }}
-                          </div>
-                          <div class="col-md-12 col-sm-12">
-                            {{ form.subject|as_crispy_field }}
-                          </div>
-                          <div class="col-lg-12">
-                            {{ form.message|as_crispy_field }}
-                          </div>
-                          <div class="col-lg-12">
-                            <fieldset>
-                              <button type="submit" id="form-submit" class="main-button">Send Message</button>
-                            </fieldset>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
+                    {% include 'incs/messageform.html' %}
                   </div>
                 </div>
                 <div class="col-lg-4">
