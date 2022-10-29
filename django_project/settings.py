@@ -1,42 +1,55 @@
-
+import environ
 import os
 from pathlib import Path
 
+env = environ.Env(DEBUG=(bool, False))
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-
+environ.Env.read_env(BASE_DIR / ".env")
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-hr9c2id@x9z2zz2q=jf^jj(wq3i)w5y^6ps+v!h0ux10cc5_2v"
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env("ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
 
-INSTALLED_APPS = [ 
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "whitenoise.runserver_nostatic", # new
-    "django.contrib.staticfiles",
-    "books.apps.BooksConfig",
-    "apis.apps.ApisConfig",
-    "todos.apps.TodosConfig",
-    "posts.apps.PostsConfig", # new
-    # 3rd party
+    "django.contrib.sites", 
+    "django.contrib.staticfiles",   
+]
+
+SITE_ID = 1
+
+THIRD_PARTY_APPS = [
+    'django_filters',
+    'django_countries',
+    'phonenumber_field',
     'anymail',   
     "rest_framework",
-    "corsheaders", # new
+    "corsheaders",
     "crispy_forms",
 ]
+
+LOCAL_APPS = [
+    "apps.books",
+    "apps.apis",
+    "apps.todos",
+    "apps.posts",
+    "apps.authentification",
+]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
@@ -89,7 +102,7 @@ WSGI_APPLICATION = "django_project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
+DATABASES={
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
         'NAME': 'django_project',
@@ -99,7 +112,6 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -119,7 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Africa/Kigali"
 
 USE_I18N = True
 
@@ -142,10 +154,9 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-ANYMAIL = {
+ANYMAIL={
     "SENDINBLUE_API_KEY": "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",
-    "SENDINBLUE_API_URL": "https://api.sendinblue.com/v3/",
-}
+    "SENDINBLUE_API_URL": "https://api.sendinblue.com/v3/", }
 
-EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
-DEFAULT_FROM_EMAIL = "patdimby@outlook.fr"
+EMAIL_BACKEND = env("EMAIL_BACKEND")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")

@@ -7,6 +7,7 @@
 # Theming app
 - [x] Add static files to app
 - [x] Add media to app
+- [x] Add ico to app.
 
 # Connect to MySQL database
 - [x] Install driver MySQL
