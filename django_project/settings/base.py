@@ -46,6 +46,7 @@ LOCAL_APPS = [
     "apps.apis",
     "apps.todos",
     "apps.posts",
+    "apps.users",
     "apps.authentification",
 ]
 
@@ -99,10 +100,6 @@ TEMPLATES = [
 WSGI_APPLICATION = "django_project.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -149,6 +146,6 @@ ANYMAIL = {
     "SENDINBLUE_API_URL": env('SENDINBLUE_API_URL'), 
     }
 
-
 EMAIL_BACKEND="anymail.backends.sendinblue.EmailBackend"
 DEFAULT_FROM_EMAIL="patdimby@outlook.fr"
+
