@@ -145,8 +145,9 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ANYMAIL = {
-    "SENDINBLUE_API_KEY": "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",
-    "SENDINBLUE_API_URL": "https://api.sendinblue.com/v3/", }
+    "SENDINBLUE_API_KEY": env('SENDINBLUE_API_KEY'),
+    "SENDINBLUE_API_URL": env('SENDINBLUE_API_URL'), 
+    }
 
 
 EMAIL_BACKEND="anymail.backends.sendinblue.EmailBackend"
