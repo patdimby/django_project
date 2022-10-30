@@ -5,7 +5,8 @@ from pathlib import Path
 env = environ.Env(DEBUG=(bool, False))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
 environ.Env.read_env(BASE_DIR / ".env")
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -14,8 +15,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = env("ALLOWED_HOSTS").split(" ")
-
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -102,16 +102,6 @@ WSGI_APPLICATION = "django_project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES={
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'django_project',
-        'USER': 'root',
-        'PASSWORD': 'Masterkey1',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
-    }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -154,9 +144,10 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-ANYMAIL={
+ANYMAIL = {
     "SENDINBLUE_API_KEY": "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",
     "SENDINBLUE_API_URL": "https://api.sendinblue.com/v3/", }
 
-EMAIL_BACKEND = env("EMAIL_BACKEND")
-DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
+
+EMAIL_BACKEND="anymail.backends.sendinblue.EmailBackend"
+DEFAULT_FROM_EMAIL="patdimby@outlook.fr"
