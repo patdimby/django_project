@@ -6,3 +6,6 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ("title", "subtitle", "author", "isbn")
+        
+class HelloSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length = 20)
