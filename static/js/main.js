@@ -5,7 +5,7 @@ function clearField(t) {
     t.value = ''; 
     t.style.color = '#fff';
   }
-};
+}
 
 const social = document.getElementById('socials')
 $.ajax({

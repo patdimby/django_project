@@ -2,16 +2,17 @@ from django.test import TestCase
 from .models import Book
 from django.urls import reverse
 
+
 # Create your tests here.
 class BookTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.book = Book.objects.create(
-        title="A good title",
-        subtitle="An excellent subtitle",
-        author="Tom Christie",
-        isbn="1234567890123",
-    )
+            title="A good title",
+            subtitle="An excellent subtitle",
+            author="Tom Christie",
+            isbn="1234567890123",
+        )
 
     def test_book_content(self):
         self.assertEqual(self.book.title, "A good title")

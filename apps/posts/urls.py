@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import info, blog, load_post, retails, about, contact, social_links, home
 
-urlpatterns = [  
+urlpatterns = [
     path("info", info, name="info"),
     path("posts/<int:id>", retails, name="retails"),
     path("posts", load_post, name="posts"),

@@ -1,17 +1,17 @@
 from distutils.command.upload import upload
 
-
 from django.db import models
 from django.utils import timezone
 # for authentifications.
 from django.contrib.auth.models import User
+
 
 class LocalUser(User):
     image = models.ImageField(upload_to='user_images/', null=True, blank=True)
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=20,  null=True, blank=True)
+    name = models.CharField(max_length=20, null=True, blank=True)
     link = models.URLField(null=True, blank=True)
 
     class Meta:
@@ -25,7 +25,7 @@ class Tag(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=30, default='Nature Lifestyle')
     link = models.URLField(null=True, blank=True)
-    
+
     class Meta:
         # ordering
         ordering = ['name']
@@ -37,8 +37,8 @@ class Category(models.Model):
 class Post(models.Model):
     class Status(models.TextChoices):
         DRAFT = 'DF', 'Draft'
-        BANNER = 'BN','Banner'
-        DEMO = 'DM','Demo'
+        BANNER = 'BN', 'Banner'
+        DEMO = 'DM', 'Demo'
         PUBLISHED = 'PB', 'Published'
 
     title = models.CharField(max_length=50)
@@ -61,12 +61,15 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
 class Message(models.Model):
     name = models.CharField(max_length=80)
     email = models.EmailField()
-    subject  = models.CharField(max_length=100)
+    subject = models.CharField(max_length=100)
     message = models.TextField()
     author = models.ForeignKey(LocalUser, on_delete=models.CASCADE, null=True, blank=True)
+
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
