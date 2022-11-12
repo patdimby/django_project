@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class Restful01Config(AppConfig):
+class DronesConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "apps.restful01"
+    name = "apps.drones"

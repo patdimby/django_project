@@ -9,6 +9,7 @@ urlpatterns = [
     path("authentication", include('apps.authentification.urls')),
     path("", include('apps.books.urls')),
     path("api/", include('apps.apis.urls')),
+    path("toy/", include('apps.restful01.urls')),
     path("blog/", include("apps.posts.urls")), # new
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
